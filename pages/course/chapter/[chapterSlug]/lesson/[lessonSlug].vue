@@ -33,6 +33,39 @@
 const course = useCourse();
 const route = useRoute();
 
+definePageMeta({
+  middleware: [function ({params}, from) {
+    
+    const course = useCourse();
+    const chapter = course.chapters.find((chapter) => chapter.slug === params.chapterSlug);
+
+    if (!chapter) {
+      return abortNavigation(
+        createError({
+          statusCode: 404,
+          message: 'Chapter not found!',
+        })
+      )
+    }
+
+    const lesson = chapter.lessons.find((lesson) => lesson.slug === params.lessonSlug)
+    if (!lesson) {
+      return abortNavigation(createError({
+        statusCode: 404,
+        message: 'Lesson not found!',
+      }))
+    }
+
+    return true
+  }, 'auth'],
+})
+
+if (
+  route.params.lessonSlug === '3-typing-component-events'
+) {
+  console.log(route.params.paramthatdoesnetexistwhoops)
+}
+
 const chapter = computed(() => {
   return course.chapters.find(
     (chapter) => chapter.slug === route.params.chapterSlug
